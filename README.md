@@ -9,9 +9,9 @@
 - [Read/Write Lock](#read-Write-Lock)
 - [Barrera](#barrera)
 - [Conclusión](#conclusión)
-- [Última actualización](#Última-actualización)
-- [Créditos](#Créditos)
-- [Referencías](#Referencías)
+- [Última actualización](#ultima-actualización)
+- [Créditos](#créditos)
+- [Referencías](#referencías)
 
 ### Introducción 
 

@@ -11,7 +11,7 @@
 - [Conclusión](#conclusión)
 - [Última actualización](#ultima-actualización)
 - [Créditos](#créditos)
-- [Referencías](#referencías)
+- [Referencías](#referencias)
 
 ### Introducción 
 

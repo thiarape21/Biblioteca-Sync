@@ -24,6 +24,41 @@ Para ello se utilizarán las siguientes herramientas de sincronización:
 2. Read/Write Lock
 3. Barrera
 
+### Mutex
+El mutex es una herramienta que permite el bloqueo de exclusión mutua. Bajo este bloqueo, solamente un hilo puede retener el bloqueo y ejecutar la región crítica. 
+
+Se presenta un ejemplo del funcionamiento del mutex, donde se cuentan los números impares en el rango entre 1 y 15. 
+```c
+void *addOdds(void *args) {
+  int num = *(int *)args;
+  if(num % 2 == 1) {
+    pthread_mutex_lock(&mutex);
+    printf("Number %d is odd\n", num);
+    odds++;
+    pthread_mutex_unlock(&mutex);
+  }
+}
+
+void mutex_test() {
+  int pt_num = 15;
+  pthread_t threads[pt_num];
+
+  for (int i = 0; i < pt_num; i++) {
+    int *n = malloc(sizeof(int));
+    *n = i + 1;
+    pthread_create(&threads[i], NULL, addOdds, n);
+  }
+
+  for (int i = 0; i < pt_num; i++) {
+    pthread_join(threads[i], NULL);
+  }
+
+  printf("Odds: %d\n", odds);
+}
+```
+
+Esta herramienta es utilizada en el proceso de implementación de los próximos algoritmos de sincronización. 
+
 ### Herramienta de trabajo utilizada 
 La herramienta que se utilizó para realizar este trabajo fue Replit. Esta plataforma en línea permite una fácil creación, edición y ejecución de proyectos de programación.
 

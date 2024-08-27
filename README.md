@@ -36,6 +36,7 @@ Se crearon dos archivos, los cuales son **main.c** y  **sync.h**, estos  contien
 
 #### Read/Write Lock
 
+
 #### Barrera
 
 La herramienta de sincronización  **Barrera** es un mecanismo que asegura que múltiples hilos se detengan y esperen hasta que todos lleguen a un punto específico de su ejecución, antes de que cualquiera de ellos avance.
@@ -135,6 +136,12 @@ Gracias a los siguientes colaboradores:
 - Delgado, J. M. (2024). Qué son los hilos de un procesador, diferencias con los núcleos y qué es más importante. Recuperado de: [Qué son los hilos de un procesador, diferencias con los núcleos y qué es más importante (computerhoy.com)](https://computerhoy.com/pc/hilos-procesador-diferencias-nucleos-1378276).
 
 - Castillo, J. A. (2019). Qué son los hilos de un procesador? Diferencias con los núcleos. Recuperado de: [Qué son los hilos de un procesador ? Diferencias con los núcleos (profesionalreview.com)](https://www.profesionalreview.com/2019/04/03/que-son-los-hilos-de-un-procesador/).
+
+- IBM. (2023-a). Utilización de bloqueos de lectura/grabación. [Documentación IBM](https://www.ibm.com/docs/es/aix/7.3?topic=programming-using-readwrite-locks) 
+
+- IBM. (2023-b). Utilización de exclusiones mutuas. [Documentación IBM](https://www.ibm.com/docs/es/aix/7.3?topic=programming-using-mutexes)
+
+- LinkedIn. (2023). ¿Cuál es el propósito de un semáforo en un sistema operativo? [LinkedIn](https://es.linkedin.com/advice/0/what-purpose-semaphore-operating-system-skills-computer-science-ozdaf?lang=es)
 
 - Stevewhims. (2023). Barreras de sincronización. Recuperado de: [Barreras de sincronización - Win32 apps | Microsoft Learn](https://learn.microsoft.com/es-es/windows/win32/sync/synchronization-barriers).
 

@@ -6,12 +6,12 @@
 - [Herramienta de trabajo utilizada ](#herramienta)
 - [Implementación General](#implementación-general)
 - [Semáforo](#semáforo)
-- [Read/Write Lock](#read-Write-Lock)
+- [Read/Write Lock](#read/write-lock)
 - [Barrera](#barrera)
 - [Conclusión](#conclusión)
 - [Última actualización](#ultima-actualización)
 - [Créditos](#créditos)
-- [Referencías](#referencias)
+- [Referencias](#referencias)
 
 ### Introducción 
 

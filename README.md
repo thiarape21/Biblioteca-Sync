@@ -8,7 +8,6 @@
 - [Semáforo](#semáforo)
 - [Read/Write Lock](#readwrite-lock)
 - [Barrera](#barrera)
-- [Conclusión](#conclusión)
 - [Última actualización](#ultima-actualización)
 - [Créditos](#créditos)
 - [Referencias](#referencias)
@@ -267,7 +266,6 @@ Se inicializa la herramienta barrera en el archivo main.c (en este caso se mostr
   barrier_test();
 }
 ```
-### Conclusión
 
 ### Última actualización 
 Este README se actualizó por última vez el [26 de agosto del 2024].

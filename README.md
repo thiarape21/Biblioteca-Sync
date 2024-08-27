@@ -8,7 +8,6 @@
 - [Semáforo](#semáforo)
 - [Read/Write Lock](#readwrite-lock)
 - [Barrera](#barrera)
-- [Conclusión](#conclusión)
 - [Última actualización](#ultima-actualización)
 - [Créditos](#créditos)
 - [Referencias](#referencias)

@@ -6,7 +6,7 @@
 - [Herramienta de trabajo utilizada ](#herramienta)
 - [Implementación General](#implementación-general)
 - [Semáforo](#semáforo)
-- [Read/Write Lock](#read_/write-lock)
+- [Read/Write Lock](#readwrite-lock)
 - [Barrera](#barrera)
 - [Conclusión](#conclusión)
 - [Última actualización](#ultima-actualización)

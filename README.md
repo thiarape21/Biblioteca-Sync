@@ -35,7 +35,118 @@ Se crearon dos archivos, los cuales son **main.c** y  **sync.h**, estos  contien
 #### Semáforo
 
 #### Read/Write Lock
+Mecanismo de bloqueo que permite una lectura simultánea de los hilos, pero brinda un bloqueo a los hilos escritores. 
 
+##### Implementación del Read/Write Lock y cómo usarlo en la biblioteca
+
+###### 1. Estructura de datos
+
+El archivo sync.h ofrece la estructura del Read/Write Lock: 
+
+```c
+typedef struct {
+  int readers;              //Contador de hilos de lectura
+  pthread_mutex_t w_lock;   //Mutex para hilos escritores
+  pthread_mutex_t r_lock;   //Mutex para hilos lectores
+
+} rwlock;
+```
+
+###### 2. Inicialización del Read/Write Lock
+Se inicializan los mutex para hilos lectores y escritores, además del contador de los hilos lectores. 
+
+```c
+void rwlock_init(rwlock *lock) {
+  lock->readers = 0;
+  pthread_mutex_init(&lock->w_lock, NULL);
+  pthread_mutex_init(&lock->r_lock, NULL);
+}
+```
+
+###### 3. Bloqueo y desbloqueo del Read/Write Lock
+
+El bloqueo de un hilo lector incrementa el contador de lectores. Además, en caso de ser el primer hilo lector, se bloquea el mutex de los hilos escritores. 
+```c
+void read_lock(rwlock *lock) {
+  pthread_mutex_lock(&lock->r_lock);
+  lock->readers++;
+  if (lock->readers == 1) {
+    pthread_mutex_lock(&lock->w_lock);
+  }
+  pthread_mutex_unlock(&lock->r_lock);
+}
+```
+
+El desbloqueo de un hilo lector decrementa el contador de lectores. Igualmente, en caso de ser el último lector contado, se desbloquea el mutex de los hilos escritores. 
+```c
+void read_unlock(rwlock *lock) {
+  pthread_mutex_lock(&lock->r_lock);
+  lock->readers--;
+  if (lock->readers == 0) {
+    pthread_mutex_unlock(&lock->w_lock);
+  }
+  pthread_mutex_unlock(&lock->r_lock);
+}
+```
+
+El bloqueo y desbloqueo de los hilos escritores se implementa con un mutex. 
+```c
+void write_lock(rwlock *lock) {
+  pthread_mutex_lock(&lock->w_lock); 
+}
+
+void write_unlock(rwlock *lock) { 
+  pthread_mutex_unlock(&lock->w_lock); 
+}
+```
+###### 4. Pruebas del Read/Write Lock
+Se implementan dos funciones auxiliares que los hilos ejecutan, una para escritores y otra para lectores. La funcion writers incrementa el valor de la variable compartida, mientras que la función readers obtiene e imprime el valor compartido. 
+
+```c
+void *writers(void *args) {
+  int *num = (int *)args;
+  write_lock(&rwlock_m);
+  *num += 5;
+  printf("**Writer is writting**\n");
+  write_unlock(&rwlock_m);
+  return NULL;
+}
+
+void *readers(void *args) {
+  read_lock(&rwlock_m);
+  int *num = (int *)args;
+  printf("Reading number: %d\n", *num);
+  read_unlock(&rwlock_m);
+  return NULL;
+}
+```
+
+La función rwlock_test crea los hilos. Por cada número divisible por 4 entre 0 y 15 se crea un hilo escritor, y por cada número que no es múltiplo de 4 se crea un hilo lector. La función indica el valor final de la variable compartida.  
+
+```c
+int rwlock_test() {
+  rwlock_init(&rwlock_m);
+  int actual_num = 0;
+  int ptnum = 15;
+
+  pthread_t hilos[ptnum];
+  for (int i = 0; i < ptnum; i++) {
+    if (i % 4 == 0) {
+      pthread_create(&hilos[i], NULL, writers, &actual_num);
+    } else {
+      pthread_create(&hilos[i], NULL, readers, &actual_num);
+    }
+  }
+
+  for (int i = 0; i < ptnum; i++) {
+    pthread_join(hilos[i], NULL);
+  }
+
+  printf("End value: %d\n", actual_num);
+
+  return 0;
+}
+```
 
 #### Barrera
 

@@ -24,10 +24,19 @@ Para ello se utilizarán las siguientes herramientas de sincronización:
 2. Read/Write Lock
 3. Barrera
 
+### Herramienta de trabajo utilizada 
+La herramienta que se utilizó para realizar este trabajo fue Replit. Esta plataforma en línea permite una fácil creación, edición y ejecución de proyectos de programación.
+
+### Implementación General
+Se crearon dos archivos, los cuales son **main.c** y  **sync.h**, estos  contienen lo siguiente:
+- **main.c**: Variables globales, funciones auxiliares, las funciones de prueba y el main.
+- **sync.h**: Estructuras de datos de cada herramienta y sus respectivas funciones.
+
 ### Mutex
 El mutex es una herramienta que permite el bloqueo de exclusión mutua. Bajo este bloqueo, solamente un hilo puede retener el bloqueo y ejecutar la región crítica. 
 
 Se presenta un ejemplo del funcionamiento del mutex, donde se cuentan los números impares en el rango entre 1 y 15. 
+
 ```c
 void *addOdds(void *args) {
   int num = *(int *)args;
@@ -57,17 +66,96 @@ void mutex_test() {
 }
 ```
 
-Esta herramienta es utilizada en el proceso de implementación de los próximos algoritmos de sincronización. 
-
-### Herramienta de trabajo utilizada 
-La herramienta que se utilizó para realizar este trabajo fue Replit. Esta plataforma en línea permite una fácil creación, edición y ejecución de proyectos de programación.
-
-### Implementación General
-Se crearon dos archivos, los cuales son **main.c** y  **sync.h**, estos  contienen lo siguiente:
-- **main.c**: Variables globales, funciones auxiliares, las funciones de prueba y el main.
-- **sync.h**: Estructuras de datos de cada herramienta y sus respectivas funciones.
-
 #### Semáforo
+Mecanismo que controla el acceso de hilos a un recurso compartido mediante el uso de una variable entera para administrar su disposición.
+
+##### Implementación del Semáforo y cómo usarlo en la biblioteca
+
+###### 1. Estructura de datos
+El archivo sync.h ofrece la estructura del Read/Write Lock: 
+
+```c
+typedef struct {
+  int counter;
+  pthread_mutex_t mutex;
+  pthread_cond_t cond;
+} semaphore;
+```
+
+###### 2. Inicialización del Semaphore
+Se establece el valor del counter, se inicializa el mutex y cond, para poder utilizar el semáforo.
+
+```c
+void semaphore_init(semaphore *sem, int counter) {
+  sem->counter = counter;
+  pthread_mutex_init(&sem->mutex, NULL);
+  pthread_cond_init(&sem->cond, NULL);
+}
+```
+
+###### 3. Bloqueo de los hilos - Down
+Decrementa el valor del contador. Al mismo tiempo, si el valor de counter es menor a 0 el hilo se duerme hasta que sea despertado nuevamente.
+
+```c
+void semaphore_down(semaphore *sem) {
+  pthread_mutex_lock(&sem->mutex);
+  if (sem->counter <= 0) {  
+    pthread_cond_wait(&sem->cond, &sem->mutex);
+  }
+  sem->counter--;
+  pthread_mutex_unlock(&sem->mutex);
+}
+```
+
+###### 4. Desbloqueo de los hilos - Up
+Aumenta el valor del contador. Además, se envía una señal para despertar uno de los hilos bloqueados.
+
+```c
+void semaphore_up(semaphore *sem) {
+  pthread_mutex_lock(&sem->mutex);
+  sem->counter++;
+  pthread_cond_signal(&sem->cond);
+  pthread_mutex_unlock(&sem->mutex);
+}
+```
+
+###### 5. Pruebas del Semaphore
+Un programa cuenta todos los múltiplos de 5 del 0 hasta el 15. Para utilizar el semáforo se crearon 16 hilos en los que cada hilo verifica si un número perteneciente al rango antes mencionado es múltiplo de 5, si lo es, se entra en la región crítica del programa donde se manipula el contador de múltiplos. El semáforo controla el acceso de todos los hilos a la variable.
+
+```c
+void *count_multiplies(void *args) {
+  int num = *(int *)args;
+  if (num % 5 == 0) {
+    printf("Thread %ld waiting for the semaphore...\n", pthread_self());
+    semaphore_down(&sem_m);
+    printf("Thread %ld has entered the critical section.\n", pthread_self());
+    count++;
+    printf("Thread %ld incremented count to %d\n", pthread_self(), count);
+    printf("Thread %ld leaving the critical section.\n", pthread_self());
+    semaphore_up(&sem_m);
+  }
+
+  return NULL;
+}
+
+int semaphore_test() {
+  semaphore_init(&sem_m, 4);
+  int n = 15;
+  int num_threads = 16;
+  pthread_t hilos[num_threads];
+  for (int i = 0; i < num_threads; i++) {
+    int *num = malloc(sizeof(int));
+    *num = i;
+    pthread_create(&hilos[i], NULL, count_multiplies, num);
+  }
+
+  for (int i = 0; i < num_threads; i++) {
+    pthread_join(hilos[i], NULL);
+  }
+  printf("Number of multiplies of 5 up to 15: %d\n", count);
+  return 0;
+}
+```
 
 #### Read/Write Lock
 Mecanismo de bloqueo que permite una lectura simultánea de los hilos, pero brinda un bloqueo a los hilos escritores. 
@@ -75,7 +163,6 @@ Mecanismo de bloqueo que permite una lectura simultánea de los hilos, pero brin
 ##### Implementación del Read/Write Lock y cómo usarlo en la biblioteca
 
 ###### 1. Estructura de datos
-
 El archivo sync.h ofrece la estructura del Read/Write Lock: 
 
 ```c
@@ -99,7 +186,6 @@ void rwlock_init(rwlock *lock) {
 ```
 
 ###### 3. Bloqueo y desbloqueo del Read/Write Lock
-
 El bloqueo de un hilo lector incrementa el contador de lectores. Además, en caso de ser el primer hilo lector, se bloquea el mutex de los hilos escritores. 
 ```c
 void read_lock(rwlock *lock) {
@@ -184,13 +270,11 @@ int rwlock_test() {
 ```
 
 #### Barrera
-
 La herramienta de sincronización  **Barrera** es un mecanismo que asegura que múltiples hilos se detengan y esperen hasta que todos lleguen a un punto específico de su ejecución, antes de que cualquiera de ellos avance.
 
 ##### Implementación de la Barrera y cómo usarla en la biblioteca 
 
 ###### 1. Estructura de datos
-
 Se debe definir la estructura de datos que tendrá la herramienta de sincronización Barrera en el archivo sync.h:
 
 ```c
@@ -267,7 +351,6 @@ Se inicializa la herramienta barrera en el archivo main.c (en este caso se mostr
   barrier_test();
 }
 ```
-### Conclusión
 
 ### Última actualización 
 Este README se actualizó por última vez el [26 de agosto del 2024].
